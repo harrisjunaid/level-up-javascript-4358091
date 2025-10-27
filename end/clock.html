@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Neon Clock</title>
+  <style>
+    body {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    #clock,
+    #date {
+      font-family: 'Courier New', monospace;
+      transition: color 1s ease, text-shadow 1s ease;
+    }
+
+    #clock {
+      font-size: 3rem;
+    }
+
+    #date {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="clock"></div>
+    <div id="date"></div>
+  </div>
+
+  <script>
+    function clock() {
+      const clockNode = document.querySelector('#clock');
+      const dateNode = document.querySelector('#date');
+
+      function update() {
+        let date = new Date();
+
+        // --- TIME ---
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let seconds = date.getSeconds();
+
+        let period = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+
+        hours = hours.toString().padStart(2, '0');
+        minutes = minutes.toString().padStart(2, '0');
+        seconds = seconds.toString().padStart(2, '0');
+
+        clockNode.textContent = `${hours}:${minutes}:${seconds} ${period}`;
+
+        // --- DATE ---
+        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+        dateNode.textContent = date.toLocaleDateString(undefined, options);
+      }
+
+      update();
+      setInterval(update, 1000);
+    }
+
+    // Dynamic glow colors
+    const colors = ['#0ff', '#f0f', '#ff0', '#0f0', '#f80', '#08f'];
+    let index = 0;
+
+    function changeGlow() {
+      const clockNode = document.querySelector('#clock');
+      const dateNode = document.querySelector('#date');
+      const color = colors[index];
+
+      clockNode.style.color = color;
+      clockNode.style.textShadow = `
+        0 0 5px ${color},
+        0 0 10px ${color},
+        0 0 20px ${color},
+        0 0 40px ${color}
+      `;
+
+      dateNode.style.color = color;
+      dateNode.style.textShadow = `
+        0 0 5px ${color},
+        0 0 10px ${color},
+        0 0 20px ${color}
+      `;
+
+      index = (index + 1) % colors.length;
+    }
+
+    clock();
+    changeGlow(); // run once immediately
+    setInterval(changeGlow, 3000); // change color every 3s
+  </script>
+</body>
+
+</html>
